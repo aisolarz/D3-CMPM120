@@ -97,7 +97,7 @@ Its comments are public if your repository is. It runs on a throwaway machine wi
 
 - Look: Slate blue or a charcoal gey for the background to give it a rainy look with earth colors like forest green, dark brown, light brown and purple for the items with a pixel font.
 
-- Sound: Continuous sound of drops of rain, Wooden thud for the fallen Oak Log, Wet squelch when stepping over Muddy Puddles, and rustling when pushing through the Thorny Brushes.
+- Sound: Continuous sound of drops of rain, Wooden thud for the fallen Oak Log, Wet squelch when stepping over Muddy Puddles, and rustling when pushing through the Thorny Bushes.
 
 - Our game would be forgettable if it felt like abstract colored squares locking and unlocking each other, so we will give the tiles sound and the crafting recipe is going to be based on child logic like taping cardboard boxes.
 
