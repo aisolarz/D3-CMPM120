@@ -11,6 +11,7 @@ const WALK_MS = 120;
 const BUMP_MS = 60;
 const MARKER_COLOR = 0xf5e6a8;
 const BUMP_COLOR = 0xe0533d;
+const GATHERED_COLOR = 0x2a332d;
 
 const TERRAIN_COLORS: Record<Terrain, number> = {
   grass: 0x3a5a40,
@@ -36,6 +37,7 @@ function cellCenter({ x, y }: Cell): Cell {
 export class GridView extends Phaser.Scene {
   private readonly seed: number;
   private readonly start: Cell;
+  private readonly gathered = new Set<string>();
   private ground!: Phaser.GameObjects.Graphics;
   private marker!: Phaser.GameObjects.Arc;
 
@@ -43,6 +45,9 @@ export class GridView extends Phaser.Scene {
     super("grid");
     this.seed = state.seed;
     this.start = { ...state.player };
+    for (const key of Object.keys(state.changedCells)) {
+      this.gathered.add(key);
+    }
   }
 
   create() {
@@ -82,6 +87,12 @@ export class GridView extends Phaser.Scene {
         return this.walk(event.to);
       case "blocked":
         return this.bump(event.at, event.toward);
+      case "gathered":
+        this.gathered.add(`${event.at.x},${event.at.y}`);
+        this.drawCellsAround(event.at);
+        return Promise.resolve();
+      case "gathered_nothing":
+        return Promise.resolve();
       default:
         // A new event type fails to type-check here until it has a presentation.
         event satisfies never;
@@ -126,7 +137,11 @@ export class GridView extends Phaser.Scene {
     this.ground.clear();
     for (let y = centerY - CELLS_DOWN; y <= centerY + CELLS_DOWN; y++) {
       for (let x = centerX - CELLS_ACROSS; x <= centerX + CELLS_ACROSS; x++) {
-        this.ground.fillStyle(TERRAIN_COLORS[terrainAt(this.seed, x, y)]);
+        const isGathered = this.gathered.has(`${x},${y}`);
+        const color = isGathered
+          ? GATHERED_COLOR
+          : TERRAIN_COLORS[terrainAt(this.seed, x, y)];
+        this.ground.fillStyle(color);
         this.ground.fillRect(
           x * CELL_SIZE,
           y * CELL_SIZE,

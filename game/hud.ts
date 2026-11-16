@@ -10,6 +10,10 @@ function describe(event: GameEvent): string {
       return `moved to ${event.to.x}, ${event.to.y}`;
     case "blocked":
       return `blocked by ${event.terrain} at ${event.toward.x}, ${event.toward.y}`;
+    case "gathered":
+      return `gathered ${event.item}`;
+    case "gathered_nothing":
+      return `gathered nothing: ${event.reason}`;
   }
 }
 
@@ -17,19 +21,32 @@ function describe(event: GameEvent): string {
 // tools can read. It changes only as events play.
 export class Hud {
   private readonly seed: number;
+  private readonly gathered = new Set<string>();
 
   constructor(state: GameState) {
     this.seed = state.seed;
+    for (const key of Object.keys(state.changedCells)) {
+      this.gathered.add(key);
+    }
     this.showPosition(state.player.x, state.player.y);
   }
 
   show(event: GameEvent) {
     element("live").textContent = describe(event);
-    if (event.type === "moved") this.showPosition(event.to.x, event.to.y);
+    if (event.type === "moved") {
+      this.showPosition(event.to.x, event.to.y);
+    } else if (event.type === "gathered") {
+      this.gathered.add(`${event.at.x},${event.at.y}`);
+      this.showPosition(event.at.x, event.at.y);
+    }
   }
 
   private showPosition(x: number, y: number) {
     element("position").textContent = `${x}, ${y}`;
-    element("terrain").textContent = terrainAt(this.seed, x, y);
+    const terrain = terrainAt(this.seed, x, y);
+    const status = this.gathered.has(`${x},${y}`)
+      ? `${terrain} (gathered)`
+      : terrain;
+    element("terrain").textContent = status;
   }
 }
