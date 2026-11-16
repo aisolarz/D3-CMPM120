@@ -91,14 +91,14 @@ Its comments are public if your repository is. It runs on a throwaway machine wi
 
 - Overall idea: There was a thunderstom that hit while the player (a child) was playing in the woods and they need to figure out a way to cross the backyard creek to get into their dry and covered treehouse.
 
-- Terrains: Grass Path, Fallen Oak Logs, Muddy Puddles, and Thorny bushes.
+- Terrains: Grass Path, Fallen Oak Logs, Muddy Puddles, and Bushes.
 
-- Craftable Items: Wooden Stepping Stones to cross Muddy Puddles, Cardboard Armor to protect you from the Thorny Bushes, and Rope Ladder Hook which pulls down the ladder to the Treehouse Hatch to win.
+- Craftable Items: Wooden Stepping Stones to cross Muddy Puddles, Cardboard Ramp to get over the heavy wooden log, and Rope Ladder Hook which pulls down the ladder to the Treehouse Hatch to win.
 
-- Look: Slate blue or a charcoal gey for the background to give it a rainy look with earth colors like forest green, dark brown, light brown and purple for the items with a pixel font.
+- Look: Slate blue or a charcoal gey for the background to give it a rainy look with earth colors like forest green, dark brown, light brown, or purple for the items with a pixel font.
 
-- Sound: Continuous sound of drops of rain, Wooden thud for the fallen Oak Log, Wet squelch when stepping over Muddy Puddles, and rustling when pushing through the Thorny Bushes.
-
+- Sound: Continuous sound of drops of rain, Wooden thud for the fallen Oak Log, Wet squelch when stepping over Muddy Puddles, and rustling when walking through the Bushes.
+  ß
 - Our game would be forgettable if it felt like abstract colored squares locking and unlocking each other, so we will give the tiles sound and the crafting recipe is going to be based on child logic like taping cardboard boxes.
 
-- If we wun out of time, we will not worry too much about adding the extra effects that can take time.
+- If we run out of time, we will not worry too much about adding the extra effects that can take time.
