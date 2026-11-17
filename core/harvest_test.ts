@@ -35,18 +35,18 @@ Deno.test("gathering twice on the same cell gives nothing the second time", () =
   }]);
 });
 
-Deno.test("gathering on an oak log yields nothing and leaves state unchanged", () => {
+Deno.test("gathering on an oak log collects a grappling hook", () => {
   const state = findCell("oak_log");
-  const snapshot = JSON.parse(JSON.stringify(state));
   const { x, y } = state.player;
 
   const events = apply(state, { type: "gather" });
 
-  assertEquals(state, snapshot);
+  assertEquals(state.inventory["grappling hook"], 1);
   assertEquals(events, [{
-    type: "gathered_nothing",
+    type: "gathered",
     at: { x, y },
-    reason: "nothing to gather",
+    item: "grappling hook",
+    inventory: { "grappling hook": 1 },
   }]);
 });
 

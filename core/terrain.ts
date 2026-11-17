@@ -7,7 +7,7 @@ export const TERRAIN_YIELDS: Record<Terrain, string | null> = {
   grass: "fence plank",
   bush: "rope",
   mud: "cardboard box",
-  oak_log: null,
+  oak_log: "grappling hook",
 };
 
 export function terrainAt(seed: number, x: number, y: number): Terrain {
