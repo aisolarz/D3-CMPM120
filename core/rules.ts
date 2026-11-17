@@ -1,6 +1,7 @@
 // The rules of the game. There is no clock here: a command updates the state at
 // once, and the events it returns are a record of what happened. Whoever called
 // apply() decides how, or whether, to show them over time.
+import { type Recipe, RECIPES } from "./recipes.ts";
 
 import {
   isPassable,
@@ -25,7 +26,8 @@ export type GameState = {
 // Command: https://gameprogrammingpatterns.com/command.html
 export type Command =
   | { type: "move"; direction: Direction }
-  | { type: "gather" };
+  | { type: "gather" }
+  | { type: "craft"; recipe: string };
 
 // Domain Event: https://martinfowler.com/eaaDev/DomainEvent.html
 export type GameEvent =
@@ -37,7 +39,9 @@ export type GameEvent =
     item: string;
     inventory: Record<string, number>;
   }
-  | { type: "gathered_nothing"; at: Cell; reason: string };
+  | { type: "gathered_nothing"; at: Cell; reason: string }
+  | { type: "crafted"; recipe: string; inventory: Record<string, number> }
+  | { type: "craft_failed"; recipe: string; missing: Record<string, number> };
 
 const STEPS: Record<Direction, Cell> = {
   north: { x: 0, y: -1 },
@@ -72,6 +76,8 @@ export function apply(state: GameState, command: Command): GameEvent[] {
       return move(state, command.direction);
     case "gather":
       return gather(state);
+    case "craft":
+      return craft(state, command.recipe);
   }
 }
 
@@ -109,4 +115,50 @@ function gather(state: GameState): GameEvent[] {
   state.inventory[item] = (state.inventory[item] ?? 0) + 1;
 
   return [{ type: "gathered", at, item, inventory: { ...state.inventory } }];
+}
+
+// Empty means ready. The rule, the page, and the tests can all ask this.
+export function missingFor(
+  state: GameState,
+  recipe: Recipe,
+): Record<string, number> {
+  const missing: Record<string, number> = {};
+  for (const [item, needed] of Object.entries(recipe.inputs)) {
+    const have = state.inventory[item] ?? 0;
+    if (have < needed) {
+      missing[item] = needed - have;
+    }
+  }
+  return missing;
+}
+
+function craft(state: GameState, recipeName: string): GameEvent[] {
+  let recipe: Recipe | undefined;
+  for (const candidate of RECIPES) {
+    if (candidate.output === recipeName) {
+      recipe = candidate;
+    }
+  }
+  if (!recipe) {
+    return [{ type: "craft_failed", recipe: recipeName, missing: {} }];
+  }
+
+  const missing = missingFor(state, recipe);
+  if (Object.keys(missing).length > 0) {
+    return [{ type: "craft_failed", recipe: recipeName, missing }];
+  }
+
+  for (const [item, needed] of Object.entries(recipe.inputs)) {
+    state.inventory[item] = (state.inventory[item] ?? 0) - needed;
+    if (state.inventory[item] === 0) {
+      delete state.inventory[item];
+    }
+  }
+  state.inventory[recipe.output] = (state.inventory[recipe.output] ?? 0) + 1;
+
+  return [{
+    type: "crafted",
+    recipe: recipeName,
+    inventory: { ...state.inventory },
+  }];
 }
