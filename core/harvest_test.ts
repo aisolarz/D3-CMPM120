@@ -14,6 +14,7 @@ Deno.test("gathering on grass collects a fence plank and marks the cell changed"
     type: "gathered",
     at: { x, y },
     item: "fence plank",
+    inventory: { "fence plank": 1 },
   }]);
 });
 

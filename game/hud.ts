@@ -29,6 +29,7 @@ export class Hud {
       this.gathered.add(key);
     }
     this.showPosition(state.player.x, state.player.y);
+    this.showInventory(state.inventory);
   }
 
   show(event: GameEvent) {
@@ -38,6 +39,7 @@ export class Hud {
     } else if (event.type === "gathered") {
       this.gathered.add(`${event.at.x},${event.at.y}`);
       this.showPosition(event.at.x, event.at.y);
+      this.showInventory(event.inventory);
     }
   }
 
@@ -48,5 +50,15 @@ export class Hud {
       ? `${terrain} (gathered)`
       : terrain;
     element("terrain").textContent = status;
+  }
+
+  private showInventory(inventory: Record<string, number>) {
+    const list = element("inventory");
+    list.textContent = "";
+    for (const [name, count] of Object.entries(inventory)) {
+      const item = document.createElement("li");
+      item.textContent = `${name}: ${count}`;
+      list.appendChild(item);
+    }
   }
 }
