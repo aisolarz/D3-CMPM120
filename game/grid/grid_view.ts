@@ -9,6 +9,7 @@ const VIEW_WIDTH = 800;
 const VIEW_HEIGHT = 600;
 const WALK_MS = 120;
 const BUMP_MS = 60;
+const GATHER_MS = 80;
 const MARKER_COLOR = 0xf5e6a8;
 const BUMP_COLOR = 0xe0533d;
 const GATHERED_COLOR = 0x2a332d;
@@ -90,7 +91,7 @@ export class GridView extends Phaser.Scene {
       case "gathered":
         this.gathered.add(`${event.at.x},${event.at.y}`);
         this.drawCellsAround(event.at);
-        return Promise.resolve();
+        return this.pop();
       case "gathered_nothing":
         return Promise.resolve();
       default:
@@ -127,6 +128,19 @@ export class GridView extends Phaser.Scene {
           this.marker.setFillStyle(MARKER_COLOR);
           done();
         },
+      });
+    });
+  }
+
+  //the jiggle physics
+  private pop(): Promise<void> {
+    return new Promise((done) => {
+      this.tweens.add({
+        targets: this.marker,
+        scale: 1.4,
+        duration: GATHER_MS,
+        yoyo: true,
+        onComplete: () => done(),
       });
     });
   }
