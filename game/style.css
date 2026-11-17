@@ -1,9 +1,9 @@
 /* The page around the grid. Everything here is yours to restyle. */
 body {
   margin: 0;
-  background: #14161a;
-  color: #e8e4da;
-  font: 14px system-ui, sans-serif;
+  background: #2b3a4a;
+  color: #d5dde5;
+  font: 11px "Press Start 2P", monospace;
 }
 
 #app {
@@ -34,11 +34,24 @@ body {
 }
 
 #hud dt {
-  color: #8d8a82;
+  color: #8fa3b5;
 }
 
 #hud dd {
   margin: 0;
+}
+
+#inventory {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  background: #3d2b1f;
+  border: 2px solid #8a6a4a;
+}
+
+#inventory li {
+  padding: 4px 0;
+  color: #9b7fd1;
 }
 
 #live {
