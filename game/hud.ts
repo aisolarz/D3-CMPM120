@@ -31,6 +31,8 @@ function describe(event: GameEvent): string {
       }
       return `can't craft ${event.recipe}: need ${parts.join(", ")}`;
     }
+    case "ended":
+      return "you climbed into the treehouse";
   }
 }
 

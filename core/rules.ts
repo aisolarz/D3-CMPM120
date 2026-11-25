@@ -1,7 +1,7 @@
 // The rules of the game. There is no clock here: a command updates the state at
 // once, and the events it returns are a record of what happened. Whoever called
 // apply() decides how, or whether, to show them over time.
-import { type Recipe, RECIPES } from "./recipes.ts";
+import { CAPSTONE, type Recipe, RECIPES } from "./recipes.ts";
 
 import {
   isPassable,
@@ -21,6 +21,7 @@ export type GameState = {
   player: Cell;
   inventory: Record<string, number>;
   changedCells: Record<string, true>;
+  isOver: boolean;
 };
 
 // Command: https://gameprogrammingpatterns.com/command.html
@@ -41,7 +42,9 @@ export type GameEvent =
   }
   | { type: "gathered_nothing"; at: Cell; reason: string }
   | { type: "crafted"; recipe: string; inventory: Record<string, number> }
-  | { type: "craft_failed"; recipe: string; missing: Record<string, number> };
+  | { type: "craft_failed"; recipe: string; missing: Record<string, number> }
+  | { type: "craft_failed"; recipe: string; missing: Record<string, number> }
+  | { type: "ended" };
 
 const STEPS: Record<Direction, Cell> = {
   north: { x: 0, y: -1 },
@@ -66,11 +69,21 @@ export function cellAt(
 
 // Singleton, avoided on purpose: tests make as many games as they need. https://gameprogrammingpatterns.com/singleton.html
 export function newGame(seed: number): GameState {
-  return { seed, player: { x: 0, y: 0 }, inventory: {}, changedCells: {} };
+  return {
+    seed,
+    player: { x: 0, y: 0 },
+    inventory: {},
+    changedCells: {},
+    isOver: false,
+  };
 }
 
 // The single way in. It updates the state it is given and returns the events.
 export function apply(state: GameState, command: Command): GameEvent[] {
+  // once the game is over no command changes anything
+  if (state.isOver) {
+    return [];
+  }
   switch (command.type) {
     case "move":
       return move(state, command.direction);
@@ -156,9 +169,14 @@ function craft(state: GameState, recipeName: string): GameEvent[] {
   }
   state.inventory[recipe.output] = (state.inventory[recipe.output] ?? 0) + 1;
 
-  return [{
+  const crafted: GameEvent = {
     type: "crafted",
     recipe: recipeName,
     inventory: { ...state.inventory },
-  }];
+  };
+  if (recipe.output === CAPSTONE) {
+    state.isOver = true;
+    return [crafted, { type: "ended" }];
+  }
+  return [crafted];
 }
