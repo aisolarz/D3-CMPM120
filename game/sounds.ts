@@ -1,6 +1,6 @@
 import type { GameEvent } from "../core/mod.ts";
 
-type SoundName = "step" | "bump" | "chime" | "pickup" | "craft";
+type SoundName = "step" | "bump" | "chime" | "pickup" | "craft" | "win";
 
 // Which sound each event plays. A new event fails to type-check until it has an entry.
 const SOUND_FOR: Record<GameEvent["type"], SoundName | null> = {
@@ -9,7 +9,7 @@ const SOUND_FOR: Record<GameEvent["type"], SoundName | null> = {
   gathered: "pickup",
   crafted: "craft",
   craft_failed: "bump",
-  ended: null,
+  ended: "win",
   gathered_nothing: null,
 };
 
@@ -35,6 +35,11 @@ const NOTES: Record<SoundName, Note[]> = {
     { frequency: 330, seconds: 0.08, wave: "triangle" },
     { frequency: 440, seconds: 0.08, wave: "triangle", at: 0.07 },
     { frequency: 660, seconds: 0.14, wave: "sine", at: 0.14 },
+  ],
+  win: [
+    { frequency: 523, seconds: 0.8, wave: "sine" },
+    { frequency: 659, seconds: 0.8, wave: "sine" },
+    { frequency: 784, seconds: 0.8, wave: "sine" },
   ],
 };
 

@@ -61,6 +61,8 @@ export class Hud {
       this.showInventory(event.inventory);
     } else if (event.type === "crafted") {
       this.showInventory(event.inventory);
+    } else if (event.type === "ended") {
+      element("banner").hidden = false;
     }
   }
 

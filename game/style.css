@@ -119,3 +119,28 @@ body {
     rgb(0 0 0 / 0.5) 100%
   );
 }
+
+#goal {
+  margin: 0;
+  line-height: 1.6;
+  color: #f5e6a8;
+}
+
+#banner {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  line-height: 1.6;
+  background: rgb(20 30 40 / 0.92);
+  color: #f5e6a8;
+}
+
+#banner[hidden] {
+  display: none;
+}
