@@ -54,3 +54,26 @@ Deno.test("every recipe input can be gathered or made", () => {
     }
   }
 });
+
+Deno.test("a crafted event keeps its inventory while state moves on", () => {
+  const recipe = RECIPES[0];
+  const state = newGame(121);
+  for (const [item, amount] of Object.entries(recipe.inputs)) {
+    state.inventory[item] = amount * 2;
+  }
+
+  const keptEvents = apply(state, { type: "craft", recipe: recipe.output });
+  apply(state, { type: "craft", recipe: recipe.output });
+
+  assertEquals(state.inventory[recipe.output], 2);
+
+  const expected: Record<string, number> = { [recipe.output]: 1 };
+  for (const [item, amount] of Object.entries(recipe.inputs)) {
+    expected[item] = amount;
+  }
+  assertEquals(keptEvents, [{
+    type: "crafted",
+    recipe: recipe.output,
+    inventory: expected,
+  }]);
+});
