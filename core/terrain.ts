@@ -10,6 +10,14 @@ export const TERRAIN_YIELDS: Record<Terrain, string | null> = {
   oak_log: "grappling hook",
 };
 
+//what the player has to hold in order to go into another terrain.
+//holding the item allows the barrier to open and no recipe spends it
+//any terrain that isnt on this is just always gonne be open
+export const BARRIER_OPENERS: Partial<Record<Terrain, string>> = {
+  mud: "wooden stepping stones",
+  oak_log: "cardboard ramp",
+};
+
 export function terrainAt(seed: number, x: number, y: number): Terrain {
   const raw = 0.65 * noise(seed, x, y, 9) + 0.35 * noise(seed + 1, x, y, 3);
   // Every game starts at the origin, so flatten the land there. Otherwise some
@@ -20,8 +28,15 @@ export function terrainAt(seed: number, x: number, y: number): Terrain {
   return noise(seed + 2, x, y, 6) < 0.45 ? "bush" : "grass";
 }
 
-export function isPassable(terrain: Terrain): boolean {
-  return terrain !== "mud" && terrain !== "oak_log";
+export function isPassable(
+  terrain: Terrain,
+  inventory: Record<string, number>,
+): boolean {
+  const opener = BARRIER_OPENERS[terrain];
+  if (opener === undefined) {
+    return true;
+  }
+  return (inventory[opener] ?? 0) > 0;
 }
 
 // Value noise: random numbers at coarse grid points, blended between them, so
