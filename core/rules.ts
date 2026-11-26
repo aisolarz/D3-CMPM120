@@ -162,7 +162,7 @@ function craft(state: GameState, recipeName: string): GameEvent[] {
   }
 
   for (const [item, needed] of Object.entries(recipe.inputs)) {
-    state.inventory[item] = (state.inventory[item] ?? 0) - needed;
+    state.inventory[item] = (state.inventory[item] ?? 0) - needed; //temporarily broke state.inventory[item] = 0 for promoted bug
     if (state.inventory[item] === 0) {
       delete state.inventory[item];
     }

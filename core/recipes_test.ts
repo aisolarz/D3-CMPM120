@@ -77,3 +77,17 @@ Deno.test("a crafted event keeps its inventory while state moves on", () => {
     inventory: expected,
   }]);
 });
+
+Deno.test("crafting keeps extra leftover ingredients in inventory", () => {
+  const state = newGame(121);
+  const recipe = RECIPES[0];
+  for (const [item, needed] of Object.entries(recipe.inputs)) {
+    state.inventory[item] = Number(needed) + 1;
+  }
+
+  apply(state, { type: "craft", recipe: recipe.output });
+
+  for (const [item] of Object.entries(recipe.inputs)) {
+    assertEquals(state.inventory[item], 1);
+  }
+});
